@@ -8,8 +8,12 @@ from .routers.users import router as users_router, admin as admin_router
 
 app = FastAPI(title="Auth Microservice", version="1.0.0")
 
-# Demo-friendly table creation. For production, use Alembic migrations.
-Base.metadata.create_all(bind=engine)
+
+@app.on_event("startup")
+def on_startup():
+    # Create tables on startup (demo-friendly). For production, use Alembic migrations.
+    Base.metadata.create_all(bind=engine)
+
 
 origins = [o.strip() for o in settings.CORS_ORIGINS.split(",")] if settings.CORS_ORIGINS else ["*"]
 app.add_middleware(
@@ -20,10 +24,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
+
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(admin_router)
+
