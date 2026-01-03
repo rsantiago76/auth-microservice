@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: auth-microservice
+    env: docker
+    dockerfilePath: Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_MIN
+        value: "15"
+      - key: CORS_ORIGINS
+        value: "*"
